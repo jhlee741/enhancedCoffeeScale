@@ -12,7 +12,10 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 HX711 scale;
 
 float value;
+int flag;
+
 void setup() {
+  flag = 0;
   value = 0;
   lcd.begin(16, 2);
   scale.begin(DT, SCK);
@@ -21,20 +24,24 @@ void setup() {
   lcd.print("Ready");
 }
 void loop() {
+  lcd.print("Let's brew!");
   if(digitalRead(sw_1)==HIGH){
-    lcd.clear();
-    value = (scale.get_value()*scale_val;
-    lcd.print(value);
-    delay(100);
+    value = measure(value);
   }
   else if(digitalRead(sw_2)==HIGH){
     reset();
   }
 }
 
+float measure(float value){
+    lcd.clear();
+    value = (scale.get_value()*scale_val;
+    return value;
+}
 void reset(){
   lcd.clear();
   value = 0;
   scale.tare(10);
+  flag = 0;
   lcd.print("Ready");
 }
