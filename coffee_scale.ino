@@ -201,21 +201,21 @@ void loop() {
               flag_4 = 1;
 
             }
-            else if (pouringRate > (1.25 * currentBrew.getPhaseOneRate())) { //Too fast!
+            else if (pouringRate > (1.15 * currentBrew.getPhaseOneRate())) { //Too fast!
               if(digitalRead(blue) == LOW){
                 digitalWrite(red, LOW);
                 digitalWrite(green, LOW);
                 digitalWrite(blue, HIGH);                
               }
             }
-            else if (pouringRate >= (0.75 * currentBrew.getPhaseOneRate()) && pouringRate <= (1.25 * currentBrew.getPhaseOneRate())) { //Just right
+            else if (pouringRate >= (0.85 * currentBrew.getPhaseOneRate()) && pouringRate <= (1.15 * currentBrew.getPhaseOneRate())) { //Just right
               if(digitalRead(green) == LOW){
                 digitalWrite(red, LOW);
                 digitalWrite(green, HIGH);
                 digitalWrite(blue, LOW);                
               }
             }
-            else if (pouringRate < (0.75 * currentBrew.getPhaseOneRate())) { //Too slow
+            else if (pouringRate < (0.85 * currentBrew.getPhaseOneRate())) { //Too slow
               if(digitalRead(red) == LOW){
                 digitalWrite(red, HIGH);
                 digitalWrite(green, LOW);
@@ -257,21 +257,21 @@ void loop() {
                 flag_4 = 0;
                 flag_5 = 1;
               }
-              else if (pouringRate > (1.25 * currentBrew.getPhaseTwoRate())) { //Too fast!
+              else if (pouringRate > (1.15 * currentBrew.getPhaseTwoRate())) { //Too fast!
                 if(digitalRead(blue) == LOW){
                   digitalWrite(red, LOW);
                   digitalWrite(green, LOW);
                   digitalWrite(blue, HIGH);                
                 }
               }
-              else if (pouringRate >= (0.75 * currentBrew.getPhaseTwoRate()) && pouringRate <= (1.25 * currentBrew.getPhaseTwoRate())) { //Just right
+              else if (pouringRate >= (0.85 * currentBrew.getPhaseTwoRate()) && pouringRate <= (1.15 * currentBrew.getPhaseTwoRate())) { //Just right
                 if(digitalRead(green) == LOW){
                   digitalWrite(red, LOW);
                   digitalWrite(green, HIGH);
                   digitalWrite(blue, LOW);                
                 }
               }
-              else if (pouringRate < (0.75 * currentBrew.getPhaseTwoRate())) { //Too slow
+              else if (pouringRate < (0.85 * currentBrew.getPhaseTwoRate())) { //Too slow
                 if(digitalRead(red) == LOW){
                   digitalWrite(red, HIGH);
                   digitalWrite(green, LOW);
@@ -322,12 +322,30 @@ void loop() {
                   lcd.print("Brew Complete!");
                   lcd.setCursor(0, 1);
                   lcd.print("Brew time:");
-                  lcd.setCursor(10,1);
-                  lcd.print(minutes);
-                  lcd.setCursor(11,1);
-                  lcd.print(":");
+                  if(minutes < 10){
+                    lcd.setCursor(10,1);
+                    lcd.print("0");
+                    lcd.setCursor(11,1);
+                    lcd.print(minutes);                      
+                  }
+                  else{
+                    lcd.setCursor(10,1);
+                    lcd.print(minutes);                    
+                  }
+                  
                   lcd.setCursor(12,1);
-                  lcd.print(seconds);
+                  lcd.print(":");
+                                    
+                  if(seconds < 10){
+                    lcd.setCursor(13,1);
+                    lcd.print("0");
+                    lcd.setCursor(14,1);
+                    lcd.print(seconds);                     
+                  }
+                  else{
+                    lcd.setCursor(12,1);
+                    lcd.print(seconds);                    
+                  }
                   delay(5000);
                   flag_6 = 1;
                 }
