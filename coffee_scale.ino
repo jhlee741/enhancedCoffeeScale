@@ -40,123 +40,128 @@ void setup() {
   digitalWrite(red, LOW);
   digitalWrite(green, LOW);
   digitalWrite(blue, LOW);
-  lcdReset(0,0);  
+  lcdReset(0, 0);
   lcd.print("Let's brew!");
 }
 void loop() {
-  
-  if(digitalRead(sw_2)==HIGH){
+  if (digitalRead(sw_2) == HIGH) {
     reset();
   }
-  
-  if(digitalRead(sw_1)==HIGH){ //Placing coffee on scale
-    
-    if(digitalRead(sw_2)==HIGH){
+
+  if (digitalRead(sw_1) == HIGH) { //Placing coffee on scale
+
+    if (digitalRead(sw_2) == HIGH) {
       reset();
     }
-    
-    lcdReset(0,0);
+
+    lcdReset(0, 0);
     lcd.print("Place beans...");
-    lcd.setCursor(0,1);
-    lcd.print("Beans in:");    
-    while(flag_1 == 0){
-      
-      if(digitalRead(sw_2)==HIGH){
+    lcd.setCursor(0, 1);
+    lcd.print("Beans in:");
+    while (flag_1 == 0) {
+
+      if (digitalRead(sw_2) == HIGH) {
         reset();
-      }      
-      
+      }
+
       value = measure(value);
-      lcd.setCursor(9,1);
+      lcd.setCursor(9, 1);
       lcd.print(value); //Does not round properly
-      lcd.setCursor(15,1);
+      lcd.setCursor(15, 1);
       lcd.print("g");
-      if(digitalRead(sw_3)==HIGH){
+      if (digitalRead(sw_3) == HIGH) {
         flag_1 = 1;
       }
     }
 
   }
-  if(flag_1 == 1){
-    
-    if(digitalRead(sw_2)==HIGH){
+  if (flag_1 == 1) {
+
+    if (digitalRead(sw_2) == HIGH) {
       reset();
     }
-    
+
     currentBrew.setBeans(value);
-    lcdReset(0,0);
+    currentBrew.setTotalBrew(currentBrew.getBeans());
+    currentBrew.setPhaseOne(currentBrew.getBeans());
+    currentBrew.setPhaseTwo(currentBrew.getBeans());
+    currentBrew.setPhaseOneRate(currentBrew.getPhaseOne());
+    currentBrew.setPhaseTwoRate(currentBrew.getPhaseTwo());
+
+    lcdReset(0, 0);
     lcd.print("Blooming Stage");
-    lcd.setCursor(0,1);
+    lcd.setCursor(0, 1);
     lcd.print("Start Countdown");
     scale.tare(10);
-    
-    if(digitalRead(sw_3)==HIGH){ //Blooming Stage
- 
-      if(digitalRead(sw_2)==HIGH){
+
+    if (digitalRead(sw_3) == HIGH) { //Blooming Stage
+
+      if (digitalRead(sw_2) == HIGH) {
         reset();
-      }   
-     
-      lcdReset(0,0);
+      }
+
+      lcdReset(0, 0);
       lcd.print("Starting in 3");
-      lcd.setCursor(12,0);
+      lcd.setCursor(12, 0);
       delay(1000);
       lcd.print("2");
-      lcd.setCursor(12,0);
+      lcd.setCursor(12, 0);
       delay(1000);
       lcd.print("1");
       delay(1000);
-      lcdReset(0,0);
+      lcdReset(0, 0);
       lcd.print("Target:");
-      lcd.setCursor(7,0);
+      lcd.setCursor(7, 0);
       lcd.print(currentBrew.bloomWeight());
-      lcd.setCursor(0,1);
+      lcd.setCursor(0, 1);
       startingTime = millis();
-      while(flag_2 == 0){
-        
-        if(digitalRead(sw_2)==HIGH){
+      while (flag_2 == 0) {
+
+        if (digitalRead(sw_2) == HIGH) {
           reset();
         }
-        
+
         value = measure(value);
-        lcd.setCursor(0,1);
+        lcd.setCursor(0, 1);
         lcd.print(value);
-        if(value >= currentBrew.bloomWeight()){
+        if (value >= currentBrew.bloomWeight()) {
           flag_1 = 0;
           flag_2 = 1;
           digitalWrite(red, HIGH);
-        }     
+        }
       }
-      if(flag_2 == 1 && flag_1 == 0){
+      if (flag_2 == 1) {
 
-        if(digitalRead(sw_2)==HIGH){
+        if (digitalRead(sw_2) == HIGH) {
           reset();
         }
-        
-        lcdReset(0,0);
-        lcd.print("Swirl until all");
-        lcd.setCursor(0,1);
-        lcd.print("grounds are wet");
-        delay(2000);      
-        lcd.clear(); 
-        while(flag_3 ==0){ //Loop for a 45 second blooming period    
 
-          if(digitalRead(sw_2)==HIGH){
+        lcdReset(0, 0);
+        lcd.print("Swirl until all");
+        lcd.setCursor(0, 1);
+        lcd.print("grounds are wet");
+        delay(2000);
+        lcd.clear();
+        while (flag_3 == 0) { //Loop for a 45 second blooming period
+
+          if (digitalRead(sw_2) == HIGH) {
             reset();
           }
-                       
+
           value = measure(value);
-          lcd.setCursor(0,0);
+          lcd.setCursor(0, 0);
           lcd.print("Blooming...");
-          lcd.setCursor(0,1);
+          lcd.setCursor(0, 1);
           lcd.print("Wait for Green!");
-          if(millis()-startingTime >= 43000){
-            
-            if(digitalRead(sw_2)==HIGH){
+          if (millis() - startingTime >= 10000) {//change back to 43000 later
+
+            if (digitalRead(sw_2) == HIGH) {
               reset();
-            }   
-                  
+            }
+
             digitalWrite(red, LOW);
             digitalWrite(green, HIGH);
-            lcdReset(0,0);
+            lcdReset(0, 0);
             lcd.print("Bloom Complete");
             flag_2 = 0;
             flag_3 = 1;
@@ -164,148 +169,158 @@ void loop() {
             digitalWrite(green, LOW);
           }
         }
-        if(flag_3 == 1 && flag_2 == 0){ //Stage 1 of brew (Rapid pour)
+        if (flag_3 == 1) { //Stage 1 of brew (Rapid pour)
 
-          if(digitalRead(sw_2)==HIGH){
+          if (digitalRead(sw_2) == HIGH) {
             reset();
           }
-                    
-          lcdReset(0,0);
+
+          lcdReset(0, 0);
           lcd.print("Rapid pour phase");
           previousTime = millis();
           valueBefore = value;
-          while(flag_4 == 0){
+          flag_4 = 0;
+          while (flag_4 == 0) {
 
-            if(digitalRead(sw_2)==HIGH){
+            if (digitalRead(sw_2) == HIGH) {
               reset();
             }
-                        
+
             value = measure(value);
-            lcd.setCursor(0,1); 
+            lcd.setCursor(0, 1);
             lcd.print(value);
             currentTime = millis();
             valueCurrent = measure(value);
             pouringRate = currentBrew.currentRate(previousTime, currentTime, valueBefore, valueCurrent);
-            
-            if(pouringRate > (1.1*currentBrew.getPhaseOneRate())){ //Too fast!
+
+            if (value > currentBrew.getPhaseOne()) {
+              flag_3 = 0;
+              flag_4 = 1;
+
+            }
+            else if (pouringRate > (1.1 * currentBrew.getPhaseOneRate())) { //Too fast!
               digitalWrite(red, LOW);
               digitalWrite(green, LOW);
               digitalWrite(blue, HIGH);
-              if(value >= currentBrew.getPhaseOne()){
-                flag_3 = 0;
-                flag_4 = 1;
-              }
             }
-            else if(pouringRate >= (0.9*currentBrew.getPhaseOneRate()) && pouringRate <= (1.1*currentBrew.getPhaseOneRate())){ //Just right
+            else if (pouringRate >= (0.9 * currentBrew.getPhaseOneRate()) && pouringRate <= (1.1 * currentBrew.getPhaseOneRate())) { //Just right
               digitalWrite(red, LOW);
               digitalWrite(blue, LOW);
               digitalWrite(green, HIGH);
-              if(value >= currentBrew.getPhaseOne()){
-                flag_3 = 0;
-                flag_4 = 1;
-              }                           
             }
-            else if(pouringRate < (0.9*currentBrew.getPhaseOneRate())){ //Too slow
+            else if (pouringRate < (0.9 * currentBrew.getPhaseOneRate())) { //Too slow
               digitalWrite(blue, LOW);
               digitalWrite(green, LOW);
               digitalWrite(red, HIGH);
-              if(value >= currentBrew.getPhaseOne()){
-                flag_3 = 0;
-                flag_4 = 1;
-              }                        
             }
-                
+            previousTime = currentTime;
+            valueBefore = valueCurrent;
           }
-          
-            if(flag_4 == 1 && flag_3 == 0){ //Second phase
-              digitalWrite(blue,LOW);
-              digitalWrite(green,LOW);
-              digitalWrite(red,LOW);
-              lcdReset(0,0);
-              lcd.print("Second phase");
-              previousTime = millis();
-              valueBefore = value;
-              while(flag_5 == 0){
-                value = measure(value);
-                lcd.setCursor(0,1); 
-                lcd.print(value);
-                currentTime = millis();
-                valueCurrent = measure(value);
-                pouringRate = currentBrew.currentRate(previousTime, currentTime, valueBefore, valueCurrent);
-                
-                if(pouringRate > (1.1*currentBrew.getPhaseTwoRate())){ //Too fast!
-                  digitalWrite(red, LOW);
-                  digitalWrite(green, LOW);
-                  digitalWrite(blue, HIGH);
-                  if(value >= currentBrew.getPhaseTwo()){
-                    flag_4 = 0;
-                    flag_5 = 1;
-                  }
-                }
-                else if(pouringRate >= (0.9*currentBrew.getPhaseTwoRate()) && pouringRate <= (1.1*currentBrew.getPhaseTwoRate())){ //Just right
-                  digitalWrite(red, LOW);
-                  digitalWrite(blue, LOW);
-                  digitalWrite(green, HIGH);
-                  if(value >= currentBrew.getPhaseTwo()){
-                    flag_4 = 0;
-                    flag_5 = 1;
-                  }                           
-                }
-                else if(pouringRate < (0.9*currentBrew.getPhaseTwoRate())){ //Too slow
-                  digitalWrite(blue, LOW);
-                  digitalWrite(green, LOW);
-                  digitalWrite(red, HIGH);
-                  if(value >= currentBrew.getPhaseTwo()){
-                    flag_4 = 0;
-                    flag_5 = 1;
-                  }                        
-                }            
+
+          if (flag_4 == 1) { //Second phase
+
+            if (digitalRead(sw_2) == HIGH) {
+              reset();
+            }
+
+            digitalWrite(blue, LOW);
+            digitalWrite(green, LOW);
+            digitalWrite(red, LOW);
+            lcdReset(0, 0);
+            lcd.print("Second phase");
+            previousTime = millis();
+            valueBefore = value;
+            while (flag_5 == 0) {
+
+              if (digitalRead(sw_2) == HIGH) {
+                reset();
               }
-  
-              if(flag_5 == 1 && flag_4 ==0){//Drawdown phase
-                digitalWrite(blue,LOW);
-                digitalWrite(green,LOW);
-                digitalWrite(red,LOW);              
-                lcdReset(0,0);
-                lcd.print("Drawdown Phase");
-                delay(7500);
-                lcd.setCursor(0,1);
-                lcd.print("Stir Gently :)");
-                digitalWrite(green, HIGH);
-                delay(5000);
-                lcd.clear();
-                lcd.setCursor(0,0);
-                lcd.print("Drawdown Phase");
+
+              value = measure(value);
+              lcd.setCursor(0, 1);
+              lcd.print(value);
+              currentTime = millis();
+              valueCurrent = measure(value);
+              pouringRate = currentBrew.currentRate(previousTime, currentTime, valueBefore, valueCurrent);
+
+              if (value > currentBrew.getTotalBrew()) {
+                flag_4 = 0;
+                flag_5 = 1;
+              }
+              else if (pouringRate > (1.1 * currentBrew.getPhaseTwoRate())) { //Too fast!
+                digitalWrite(red, LOW);
                 digitalWrite(green, LOW);
-  
-                while(flag_6 == 0){
-                  if(digitalRead(sw_3)==HIGH){                 
-                    lcd.clear();
-                    lcd.setCursor(0,0);
-                    lcd.print("Brew Complete!");
-                    lcd.setCursor(0,1);                 
-                    flag_6 = 1;
-                  }
-                }              
+                digitalWrite(blue, HIGH);
               }
-            }       
+              else if (pouringRate >= (0.9 * currentBrew.getPhaseTwoRate()) && pouringRate <= (1.1 * currentBrew.getPhaseTwoRate())) { //Just right
+                digitalWrite(red, LOW);
+                digitalWrite(blue, LOW);
+                digitalWrite(green, HIGH);
+              }
+              else if (pouringRate < (0.9 * currentBrew.getPhaseTwoRate())) { //Too slow
+                digitalWrite(blue, LOW);
+                digitalWrite(green, LOW);
+                digitalWrite(red, HIGH);
+              }
+              previousTime = currentTime;
+              valueBefore = valueCurrent;
+            }
+            if (flag_5 == 1) { //Drawdown phase
+              digitalWrite(green, HIGH);
+              delay(2000);
+              if (digitalRead(sw_2) == HIGH) {
+                reset();
+              }
+
+              digitalWrite(blue, LOW);
+              digitalWrite(green, LOW);
+              digitalWrite(red, LOW);
+              lcdReset(0, 0);
+              lcd.print("Drawdown Phase");
+              delay(7500);
+              lcd.setCursor(0, 1);
+              lcd.print("Stir Gently :)");
+              digitalWrite(green, HIGH);
+              delay(5000);
+              lcd.clear();
+              lcd.setCursor(0, 0);
+              lcd.print("Drawdown Phase");
+              digitalWrite(green, LOW);
+
+              while (flag_6 == 0) {
+
+                if (digitalRead(sw_2) == HIGH) {
+                  reset();
+                }
+
+                if (digitalRead(sw_3) == HIGH) {
+                  lcd.clear();
+                  lcd.setCursor(0, 0);
+                  lcd.print("Brew Complete!");
+                  lcd.setCursor(0, 1);
+                  delay(5000);
+                  flag_6 = 1;
+                }
+              }
+            }
           }
-        }     
+        }
+      }
     }
   }
 }
-void lcdReset(int col, int row){
+void lcdReset(int col, int row) {
   lcd.clear();
-  lcd.setCursor(col,row);
-  
+  lcd.setCursor(col, row);
+
 }
 
-float measure(float value){
-    value = scale.get_value()*scale_val;
-    return value;
+float measure(float value) {
+  value = scale.get_value() * scale_val;
+  return value;
 }
 
-void reset(){
+void reset() {
   lcd.clear();
   value = 0;
   scale.tare(10);
@@ -319,5 +334,6 @@ void reset(){
   digitalWrite(green, LOW);
   digitalWrite(blue, LOW);
   lcd.print("Let's brew!");
+  loop();
   //make sure to remember to delete the currentBrew object
 }

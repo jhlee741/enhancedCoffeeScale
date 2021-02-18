@@ -8,8 +8,20 @@ void coffeeParameters::setBeans(float beans){
   beansIn = beans;
 }
 
+float coffeeParameters::getBeans(){
+  return beansIn;
+}
+
 int coffeeParameters::bloomWeight(){
   return (beansIn+0.5)*2;
+}
+
+void coffeeParameters::setTotalBrew(float beans){
+  totalBrew = beans*16.6667;
+}
+
+void coffeeParameters::setPhaseOne(float beans){
+  phaseOne  = totalBrew*0.6;
 }
 
 float coffeeParameters::getTotalBrew(){
@@ -20,8 +32,12 @@ float coffeeParameters::getPhaseOne(){
   return phaseOne;
 }
 
-float coffeeParameters::getPhaseTwo(){
-  return phaseTwo;
+void coffeeParameters::setPhaseOneRate(float phaseOne){
+  phaseOneRate = phaseOne/30000;
+}
+
+void coffeeParameters::setPhaseTwoRate(float phaseTwo){
+  phaseTwoRate = phaseTwo/30000;
 }
 
 float coffeeParameters::getPhaseOneRate(){
