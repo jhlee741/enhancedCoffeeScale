@@ -151,7 +151,7 @@ void loop() {
           lcd.print("Blooming...");
           lcd.setCursor(0, 1);
           lcd.print("Wait for Green!");
-          if (millis() - startingTime >= 10000) {//change back to 43000 later
+          if (millis() - startingTime >= 43000) {
 
             if (digitalRead(sw_2) == HIGH) {
               reset();
