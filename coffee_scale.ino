@@ -17,7 +17,7 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 HX711 scale;
 
-float value, valueBefore, valueCurrent, valueTotal, pouringRate, valueBloom, valuePhaseOne;
+float value, valueBefore, valueCurrent, pouringRate;
 int flag_1, flag_2, flag_3, flag_4, flag_5, flag_6, minutes, seconds;
 unsigned long startingTime, previousTime, currentTime, finalTime;
 coffeeParameters currentBrew;
@@ -27,12 +27,11 @@ void setup() {
   flag_2 = 0;
   flag_3 = 0;
   flag_4 = 0;
+  flag_5 = 0;
+  flag_6 = 0;
   value = 0;
   valueBefore = 0;
   valueCurrent = 0;
-  valueTotal = 0;
-  valueBloom = 0;
-  valuePhaseOne = 0;
   lcd.begin(16, 2);
   scale.begin(DT, SCK);
   scale.tare(10);
@@ -140,8 +139,6 @@ void loop() {
         if (digitalRead(sw_2) == HIGH) {
           reset();
         }
-        valueTotal += value;
-        valueBloom = value;
         lcdReset(0, 0);
         lcd.print("Swirl until all");
         lcd.setCursor(0, 1);
@@ -197,11 +194,9 @@ void loop() {
             lcd.print(value);
             currentTime = millis();
             valueCurrent = measure(value);
-            valueTotal += (valueCurrent - valueBefore);
             pouringRate = currentBrew.currentRate(previousTime, currentTime, valueBefore, valueCurrent);
 
-            if ((valueTotal - valueBloom) > currentBrew.getPhaseOne()) {
-              valuePhaseOne = valueTotal - valueBloom;
+            if (value > currentBrew.getPhaseOne()) {
               flag_3 = 0;
               flag_4 = 1;
 
@@ -256,10 +251,9 @@ void loop() {
               lcd.print(value);
               currentTime = millis();
               valueCurrent = measure(value);
-              valueTotal += (valueCurrent - valueBefore);
               pouringRate = currentBrew.currentRate(previousTime, currentTime, valueBefore, valueCurrent);
 
-              if (valueTotal > currentBrew.getTotalBrew()) {
+              if (value > currentBrew.getTotalBrew()) {
                 flag_4 = 0;
                 flag_5 = 1;
               }
@@ -361,9 +355,6 @@ void reset() {
   value = 0;
   valueBefore = 0;
   valueCurrent = 0;
-  valueTotal = 0;
-  valueBloom = 0;
-  valuePhaseOne = 0;
   scale.tare(10);
   flag_1 = 0;
   flag_2 = 0;
