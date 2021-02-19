@@ -343,7 +343,7 @@ void loop() {
                     lcd.print(seconds);                     
                   }
                   else{
-                    lcd.setCursor(12,1);
+                    lcd.setCursor(13,1);
                     lcd.print(seconds);                    
                   }
                   delay(5000);
