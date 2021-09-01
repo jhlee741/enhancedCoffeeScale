@@ -15,5 +15,5 @@ The Arduino environment is really cool! There are so many things you can do with
 ## What's next for _The Coffee Pour Over Assistant_
 I definitely need to make the next iteration of this scale out of a heat resistant material like ABS. Since I used PLA for the scale, I had to add an insulating layer of styrofoam which doesn't look great. I will also try to design a PCB for the scale and move away from the breadboard. More options that follow different recipe's is also an option I can program into the scale with minimal alterations.
 
-##Check out this video for the scale in action!
+## Check out this video for the scale in action!
 https://www.youtube.com/watch?v=fS8e1eBkPQA
