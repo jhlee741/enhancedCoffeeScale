@@ -1,5 +1,7 @@
 ## enhancedCoffeeScale
 
+![gallery](https://user-images.githubusercontent.com/75803498/132915022-fcf9fb8c-a2f7-4281-a00f-f921778dc2c9.jpg)
+
 ## Inspiration
 I make coffee every morning. Even though I've been doing it for the better part of 2 years, I still struggle to consistently get a good cup due to the number of parameters I need to control. I've simplified things by designing _The Pour Over Assistant_.
 ## What it does
